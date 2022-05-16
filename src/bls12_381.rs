@@ -127,30 +127,22 @@ impl IndifferentiableHash for Parameters {
         let z2 = Self::Z * Self::Z;
         let c2 = Self::C * Self::C;
 
-        let l = [t1, Self::W * t1, w2 * t1];
-        let mut n = 0;
+        let mut w_zeta = theta;
 
-        if t1 > l[1] {
-            n += 1;
+        if t1 > Self::W * t1 {
+            w_zeta *= Self::W;
         }
-        if t1 > l[2] {
-            n += 1;
+        if t1 > w2 * t1 {
+            w_zeta *= Self::W;
         }
 
         let (x, y, z) = if v3 == u3 {
-            let x = match n {
-                0 => theta,
-                1 => Self::W * theta,
-                2 => Self::W * Self::W * theta,
-                _ => panic!("should not arrive here"),
-            };
-
             let (y, z) = {
                 if v == u {
                     (one, one)
                 } else if v == Self::W * u {
                     (Self::Z, Self::Z)
-                } else if v == Self::W * Self::W * u {
+                } else if v == w2 * u {
                     (z2, z2)
                 } else {
                     panic!("should not arrive here")
@@ -158,7 +150,7 @@ impl IndifferentiableHash for Parameters {
             };
             let y = y * num0;
 
-            (x, y, z)
+            (w_zeta, y, z)
         } else if v3 == Self::W * u3 {
             let x = Self::C * theta * t1;
             let zu = Self::Z * u;
@@ -167,7 +159,7 @@ impl IndifferentiableHash for Parameters {
                     (one, one)
                 } else if v == Self::W * zu {
                     (Self::Z, Self::Z)
-                } else if v == Self::W * Self::W * zu {
+                } else if v == w2 * zu {
                     (z2, z2)
                 } else {
                     panic!("should not arrive here")
@@ -183,7 +175,7 @@ impl IndifferentiableHash for Parameters {
                     (one, one)
                 } else if v == Self::W * z2u {
                     (Self::Z, Self::Z)
-                } else if v == Self::W * Self::W * z2u {
+                } else if v == w2 * z2u {
                     (z2, z2)
                 } else {
                     panic!("should not arrive here")
@@ -204,10 +196,9 @@ impl IndifferentiableHash for Parameters {
 
 #[cfg(test)]
 mod test {
+    use crate::IndifferentiableHash;
     use ark_bls12_381::{g1::Parameters, Fq};
     use ark_ff::field_new;
-
-    use crate::IndifferentiableHash;
 
     #[test]
     fn test_phi() {

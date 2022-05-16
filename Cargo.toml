@@ -12,3 +12,9 @@ ark-std = { version = "^0.3.0", default-features = false }
 ark-bls12-381 = { version = "^0.3.0", default-features = false, features = [ "curve" ] }
 
 sha2 = { version = "^0.10.0", default-features = false }
+
+criterion = "0.3.4"
+
+[[bench]]
+name = "bench"
+harness = false
