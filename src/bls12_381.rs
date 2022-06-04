@@ -1,12 +1,11 @@
 use crate::IndifferentiableHash;
 use ark_bls12_381::{g1::Parameters, Fq};
 use ark_ec::short_weierstrass_jacobian::GroupProjective;
-use ark_ec::ProjectiveCurve;
 use ark_ec::SWModelParameters;
 use ark_ff::field_new;
 use ark_ff::Field;
 use ark_ff::PrimeField;
-use ark_ff::Zero;
+
 
 impl IndifferentiableHash for Parameters {
     // m = (q - 10) // 27
