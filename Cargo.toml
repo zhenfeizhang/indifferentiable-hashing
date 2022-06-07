@@ -11,10 +11,14 @@ ark-ec = { version = "^0.3.0", default-features = false }
 ark-std = { version = "^0.3.0", default-features = false }
 ark-bls12-381 = { version = "^0.3.0", default-features = false, features = [ "curve" ] }
 ark-bls12-377 = { version = "^0.3.0", default-features = false, features = [ "curve" ] }
+ark-serialize = { version = "^0.3.0", default-features = false }
 
 sha2 = { version = "^0.10.0", default-features = false }
 
 criterion = "0.3.4"
+
+[dev-dependencies]
+itoa = "1.0.2"
 
 [[bench]]
 name = "bench"

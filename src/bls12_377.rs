@@ -106,9 +106,10 @@ impl IndifferentiableHash for Parameters {
 
 #[cfg(test)]
 mod test {
-    use crate::IndifferentiableHash;
+    use crate::{test_vectors::bls12_377_test, IndifferentiableHash};
     use ark_bls12_377::{g1::Parameters, Fq};
     use ark_ff::field_new;
+    use itoa::Buffer;
 
     #[test]
     fn test_phi() {
@@ -175,5 +176,20 @@ mod test {
         assert_eq!(x, res.x);
         assert_eq!(y, res.y);
         assert_eq!(z, res.z);
+    }
+
+    #[test]
+    fn check_test_vectors() {
+        let test_vectors = bls12_377_test();
+        assert!(test_vectors.len() % 3 == 0);
+        for i in 0..test_vectors.len() / 3 {
+            println!("{}", i);
+            let mut buffer = Buffer::new();
+            let printed = buffer.format(i);
+            let res = <Parameters as IndifferentiableHash>::hash_to_curve(printed);
+            assert_eq!(test_vectors[i * 3], res.x);
+            assert_eq!(test_vectors[i * 3 + 1], res.y);
+            assert_eq!(test_vectors[i * 3 + 2], res.z);
+        }
     }
 }

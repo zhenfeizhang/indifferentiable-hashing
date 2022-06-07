@@ -8,6 +8,9 @@ use sha2::Sha512;
 mod bls12_377;
 mod bls12_381;
 
+#[cfg(test)]
+mod test_vectors;
+
 pub trait IndifferentiableHash: SWModelParameters
 where
     Self::BaseField: PrimeField,

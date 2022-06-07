@@ -6,7 +6,6 @@ use ark_ff::field_new;
 use ark_ff::Field;
 use ark_ff::PrimeField;
 
-
 impl IndifferentiableHash for Parameters {
     // m = (q - 10) // 27
     const M: Self::BaseField = field_new!(Fq, "148237390934135829385844067619848302094699363701444736493779930967556727795956957942321764041815394964366454539251");
@@ -173,9 +172,11 @@ impl IndifferentiableHash for Parameters {
 
 #[cfg(test)]
 mod test {
+    use crate::test_vectors::bls12_381_test;
     use crate::IndifferentiableHash;
     use ark_bls12_381::{g1::Parameters, Fq};
     use ark_ff::field_new;
+    use itoa::Buffer;
 
     #[test]
     fn test_phi() {
@@ -242,5 +243,19 @@ mod test {
         assert_eq!(x, res.x);
         assert_eq!(y, res.y);
         assert_eq!(z, res.z);
+    }
+
+    #[test]
+    fn check_test_vectors() {
+        let test_vectors = bls12_381_test();
+        assert!(test_vectors.len() % 3 == 0);
+        for i in 0..test_vectors.len() / 3 {
+            let mut buffer = Buffer::new();
+            let printed = buffer.format(i);
+            let res = <Parameters as IndifferentiableHash>::hash_to_curve(printed);
+            assert_eq!(test_vectors[i * 3], res.x);
+            assert_eq!(test_vectors[i * 3 + 1], res.y);
+            assert_eq!(test_vectors[i * 3 + 2], res.z);
+        }
     }
 }
