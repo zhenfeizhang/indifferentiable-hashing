@@ -19,6 +19,8 @@ __Note__: you may need [SageMath](https://www.sagemath.org/) to validate test ve
 
 
 ## Benchmark result
+
+Collected over `1000` iterations, each with a random input.
 ```
 hash to group/sw hashing                                                                            
                         time:   [59.293 ms 59.359 ms 59.440 ms]
