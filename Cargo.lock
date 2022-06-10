@@ -3,13 +3,24 @@
 version = 3
 
 [[package]]
+name = "ahash"
+version = "0.7.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fcb51a0695d8f838b1ee009b3fbf66bda078cd64590202a864a8f3e8c4315c47"
+dependencies = [
+ "getrandom",
+ "once_cell",
+ "version_check",
+]
+
+[[package]]
 name = "ark-bls12-377"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dc41c02c0d18a226947ee9ee023b1d957bdb6a68fc22ac296722935a9fef423c"
 dependencies = [
- "ark-ec",
- "ark-ff",
+ "ark-ec 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-ff 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-std",
 ]
 
@@ -19,8 +30,8 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "65be532f9dd1e98ad0150b037276cde464c6f371059e6dd02c0222395761f6aa"
 dependencies = [
- "ark-ec",
- "ark-ff",
+ "ark-ec 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-ff 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-std",
 ]
 
@@ -30,11 +41,27 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dea978406c4b1ca13c2db2373b05cc55429c3575b8b21f1b9ee859aa5b03dd42"
 dependencies = [
- "ark-ff",
- "ark-serialize",
+ "ark-ff 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-serialize 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-std",
  "derivative",
  "num-traits",
+ "zeroize",
+]
+
+[[package]]
+name = "ark-ec"
+version = "0.3.0"
+source = "git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests#cf5531769315ae12af6e38979d91e3efa455f08b"
+dependencies = [
+ "ark-ff 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-poly",
+ "ark-serialize 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-std",
+ "derivative",
+ "hashbrown",
+ "num-traits",
+ "rayon",
  "zeroize",
 ]
 
@@ -44,9 +71,9 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6b3235cc41ee7a12aaaf2c575a2ad7b46713a8a50bda2fc3b003a04845c05dd6"
 dependencies = [
- "ark-ff-asm",
- "ark-ff-macros",
- "ark-serialize",
+ "ark-ff-asm 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-ff-macros 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-serialize 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-std",
  "derivative",
  "num-bigint",
@@ -57,10 +84,38 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-ff"
+version = "0.3.0"
+source = "git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests#cf5531769315ae12af6e38979d91e3efa455f08b"
+dependencies = [
+ "ark-ff-asm 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-ff-macros 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-serialize 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-std",
+ "derivative",
+ "digest 0.10.3",
+ "num-bigint",
+ "num-traits",
+ "paste",
+ "rayon",
+ "rustc_version 0.4.0",
+ "zeroize",
+]
+
+[[package]]
 name = "ark-ff-asm"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "db02d390bf6643fb404d3d22d31aee1c4bc4459600aef9113833d17e786c6e44"
+dependencies = [
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "ark-ff-asm"
+version = "0.3.0"
+source = "git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests#cf5531769315ae12af6e38979d91e3efa455f08b"
 dependencies = [
  "quote",
  "syn",
@@ -79,6 +134,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-ff-macros"
+version = "0.3.0"
+source = "git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests#cf5531769315ae12af6e38979d91e3efa455f08b"
+dependencies = [
+ "num-bigint",
+ "num-traits",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "ark-poly"
+version = "0.3.0"
+source = "git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests#cf5531769315ae12af6e38979d91e3efa455f08b"
+dependencies = [
+ "ark-ff 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-serialize 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-std",
+ "derivative",
+ "hashbrown",
+]
+
+[[package]]
 name = "ark-serialize"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -89,13 +167,43 @@ dependencies = [
 ]
 
 [[package]]
+name = "ark-serialize"
+version = "0.3.0"
+source = "git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests#cf5531769315ae12af6e38979d91e3efa455f08b"
+dependencies = [
+ "ark-serialize-derive",
+ "ark-std",
+ "digest 0.10.3",
+]
+
+[[package]]
+name = "ark-serialize-derive"
+version = "0.3.0"
+source = "git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests#cf5531769315ae12af6e38979d91e3efa455f08b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "ark-std"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1df2c09229cbc5a028b1d70e00fdb2acee28b1055dfb5ca73eea49c5a25c4e7c"
+source = "git+https://github.com/arkworks-rs/std#05b7a19a99551bdd737eb2ffb1c9eac7be0dd11f"
 dependencies = [
  "num-traits",
  "rand",
+ "rayon",
+]
+
+[[package]]
+name = "ark-test-curves"
+version = "0.3.0"
+source = "git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests#cf5531769315ae12af6e38979d91e3efa455f08b"
+dependencies = [
+ "ark-ec 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-ff 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-std",
 ]
 
 [[package]]
@@ -343,10 +451,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "getrandom"
+version = "0.2.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9be70c98951c83b8d2f8f60d7065fa6d5146873094452a1008da8c2f1e4205ad"
+dependencies = [
+ "cfg-if",
+ "libc",
+ "wasi",
+]
+
+[[package]]
 name = "half"
 version = "1.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eabb4a44450da02c90444cf74558da904edde8fb4e9035a9a6a4e15445af0bd7"
+
+[[package]]
+name = "hashbrown"
+version = "0.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "db0d4cf898abf0081f964436dc980e96670a0f36863e4b83aaacdb65c9d7ccc3"
+dependencies = [
+ "ahash",
+]
 
 [[package]]
 name = "hermit-abi"
@@ -363,10 +491,13 @@ version = "0.1.0"
 dependencies = [
  "ark-bls12-377",
  "ark-bls12-381",
- "ark-ec",
- "ark-ff",
- "ark-serialize",
+ "ark-ec 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-ec 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-ff 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ark-ff 0.3.0 (git+https://github.com/mmagician/algebra/?branch=map-to-curve-tests)",
+ "ark-serialize 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "ark-std",
+ "ark-test-curves",
  "criterion",
  "itoa 1.0.2",
  "sha2",
@@ -477,6 +608,12 @@ dependencies = [
  "hermit-abi",
  "libc",
 ]
+
+[[package]]
+name = "once_cell"
+version = "1.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7709cef83f0c1f58f666e746a08b21e0085f7440fa6a29cc194d68aac97a4225"
 
 [[package]]
 name = "oorandom"
@@ -637,7 +774,7 @@ version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"
 dependencies = [
- "semver 1.0.9",
+ "semver 1.0.10",
 ]
 
 [[package]]
@@ -672,9 +809,9 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "1.0.9"
+version = "1.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8cb243bdfdb5936c8dc3c45762a19d12ab4550cdc753bc247637d4ec35a040fd"
+checksum = "a41d061efea015927ac527063765e73601444cdc344ba855bc7bd44578b25e1c"
 
 [[package]]
 name = "semver-parser"
@@ -822,6 +959,12 @@ dependencies = [
  "winapi",
  "winapi-util",
 ]
+
+[[package]]
+name = "wasi"
+version = "0.10.2+wasi-snapshot-preview1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fd6fbd9a79829dd1ad0cc20627bf1ed606756a7f77edff7b66b7064f9cb327c6"
 
 [[package]]
 name = "wasm-bindgen"

@@ -19,7 +19,14 @@ criterion = "0.3.4"
 
 [dev-dependencies]
 itoa = "1.0.2"
+ark-ec-m2c = { package = "ark-ec", git = "https://github.com/mmagician/algebra/", branch = "map-to-curve-tests", features = [ "parallel" ] }
+ark-ff-m2c = { package = "ark-ff", git = "https://github.com/mmagician/algebra/", branch = "map-to-curve-tests", features = [ "parallel" ] }
+ark-test-curves = { git = "https://github.com/mmagician/algebra/", branch = "map-to-curve-tests", features = [ "parallel", "bls12_381_curve" ] }
 
 [[bench]]
 name = "bench"
 harness = false
+
+# To be removed in the new release.
+[patch.crates-io]
+ark-std = { git = "https://github.com/arkworks-rs/std"}
