@@ -19,9 +19,9 @@ criterion = "0.3.4"
 
 [dev-dependencies]
 itoa = "1.0.2"
-ark-ec-m2c = { package = "ark-ec", git = "https://github.com/mmagician/algebra/", branch = "map-to-curve-tests", features = [ "parallel" ] }
-ark-ff-m2c = { package = "ark-ff", git = "https://github.com/mmagician/algebra/", branch = "map-to-curve-tests", features = [ "parallel" ] }
-ark-test-curves = { git = "https://github.com/mmagician/algebra/", branch = "map-to-curve-tests", features = [ "parallel", "bls12_381_curve" ] }
+ark-ec-m2c = { package = "ark-ec", git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel" ], rev = "a010399ffef0fbcdefeea8e7793a2f61f769fa3a" }
+ark-ff-m2c = { package = "ark-ff", git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel" ], rev = "a010399ffef0fbcdefeea8e7793a2f61f769fa3a"  }
+ark-test-curves = { git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel", "bls12_381_curve" ], rev = "a010399ffef0fbcdefeea8e7793a2f61f769fa3a"  }
 
 [[bench]]
 name = "bench"
