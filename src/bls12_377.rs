@@ -1,6 +1,6 @@
 use crate::IndifferentiableHash;
 use ark_bls12_377::{g1::Parameters, Fq};
-use ark_ec::short_weierstrass_jacobian::GroupProjective;
+use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use ark_ff::field_new;
 use ark_ff::Field;
 use ark_ff::PrimeField;
@@ -17,8 +17,8 @@ impl IndifferentiableHash for Parameters {
     // sqrt(c) = w2
     const C: Self::BaseField=field_new!(Fq, "80949648264912719408558363140637477264845294720710499478137287262712535938301461879813459410945");
 
-    /// projective curve point
-    type GroupProjective = GroupProjective<Self>;
+    /// affine curve point
+    type GroupAffine = GroupAffine<Self>;
 
     /// rational map Fq^2 -> T(Fq)
     //  [1, Lemma 1] states that T is given in the affine space A^5(y0,y1,y2,t1,t2) by the two equations
@@ -61,8 +61,7 @@ impl IndifferentiableHash for Parameters {
     //  where Eb', Eb'' are the cubic twists of Eb
     //  and [w](x, y) -> (wx, y) is an automorphism of order 3 on Eb, Eb', and Eb''.
     //
-
-    fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupProjective {
+    fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupAffine {
         let num0 = inputs[0];
         let num1 = inputs[1];
         let num2 = inputs[2];
@@ -100,7 +99,7 @@ impl IndifferentiableHash for Parameters {
         };
 
         x *= den;
-        Self::GroupProjective::new(x, y, den)
+        Self::GroupAffine::new(x / den, y / den, false)
     }
 }
 
@@ -153,14 +152,12 @@ mod test {
         let num2 = field_new!(Fq, "57810252927660975112849425869623937226026741146305617779465830017429130492021688720475210916353413056131115781761");
         let den = field_new!(Fq, "78398001865787854177025635014529777727601615001869942467487640632949237780287612570680483119195173304728124338625");
 
-        let x = field_new!(Fq, "54059734706712616081386575862226305951660239855851249918165672319462621854519985310808634560061274521294821914562");
-        let y = field_new!(Fq, "98241388121184563294646776678603892695281563918978233602399875404203868999754681227352730974175637376989076521369");
-        let z = field_new!(Fq, "78398001865787854177025635014529777727601615001869942467487640632949237780287612570680483119195173304728124338625");
+        let x = field_new!(Fq, "88447843811798607965089937473865912423924078263559752807725536262741898732229175112055733585000923536178427677939");
+        let y = field_new!(Fq, "119339617480652487339002458539325679729480695131809659954059558580581317550001999467138841798123360870137733931845");
 
         let res = <Parameters as IndifferentiableHash>::h_prime(&[num0, num1, num2, den, t1, t2]);
         assert_eq!(x, res.x);
         assert_eq!(y, res.y);
-        assert_eq!(z, res.z);
     }
 
     #[test]
@@ -168,28 +165,28 @@ mod test {
         // the following test inputs are obtained from the sage code with an input string s = "input to the test function"
         let s = "input to the test function";
 
-        let x = field_new!(Fq, "54059734706712616081386575862226305951660239855851249918165672319462621854519985310808634560061274521294821914562");
-        let y = field_new!(Fq, "98241388121184563294646776678603892695281563918978233602399875404203868999754681227352730974175637376989076521369");
-        let z = field_new!(Fq, "78398001865787854177025635014529777727601615001869942467487640632949237780287612570680483119195173304728124338625");
+        let x = field_new!(Fq, "88447843811798607965089937473865912423924078263559752807725536262741898732229175112055733585000923536178427677939");
+        let y = field_new!(Fq, "119339617480652487339002458539325679729480695131809659954059558580581317550001999467138841798123360870137733931845");
 
         let res = <Parameters as IndifferentiableHash>::hash_to_curve(s);
         assert_eq!(x, res.x);
         assert_eq!(y, res.y);
-        assert_eq!(z, res.z);
+
+        assert!(res.is_on_curve());
     }
 
     #[test]
     fn check_test_vectors() {
         let test_vectors = bls12_377_test();
-        assert!(test_vectors.len() % 3 == 0);
-        for i in 0..test_vectors.len() / 3 {
-            println!("{}", i);
+        assert!(test_vectors.len() % 2 == 0);
+        for i in 0..test_vectors.len() / 2 {
             let mut buffer = Buffer::new();
             let printed = buffer.format(i);
             let res = <Parameters as IndifferentiableHash>::hash_to_curve(printed);
-            assert_eq!(test_vectors[i * 3], res.x);
-            assert_eq!(test_vectors[i * 3 + 1], res.y);
-            assert_eq!(test_vectors[i * 3 + 2], res.z);
+            assert_eq!(test_vectors[i * 2], res.x);
+            assert_eq!(test_vectors[i * 2 + 1], res.y);
+
+            assert!(res.is_on_curve());
         }
     }
 }

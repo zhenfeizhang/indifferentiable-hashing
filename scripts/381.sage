@@ -167,9 +167,8 @@ def H(s):
 
 
 # Main
-# symbols = string.ascii_letters + string.digits
-# length = random.randint(0,50)
-# s = ''.join( random.choices(symbols, k=length) )
-# Eb = EllipticCurve(Fq, [0,b])
-# X,Y,Z = H(s)
-# print( f"\nH({s})   =   ({X} : {Y} : {Z})   =   {Eb(X,Y,Z)}\n" )
+s = "input to the test function"
+Eb = EllipticCurve(Fq, [0,b])
+X,Y,Z = H(s)
+print( f"\nH({s})   =   ({X} : {Y} : {Z})   =   {Eb(X,Y,Z)}\n" )
+

@@ -1,4 +1,4 @@
-use ark_ec::ProjectiveCurve;
+use ark_ec::AffineCurve;
 use ark_ec::SWModelParameters;
 use ark_ff::PrimeField;
 use ark_ff::Zero;
@@ -24,19 +24,19 @@ where
     // c1 = (b/z).nth_root(3)
     const C: Self::BaseField;
 
-    /// projective curve point
-    type GroupProjective: ProjectiveCurve;
+    /// affine curve point
+    type GroupAffine: AffineCurve;
 
     /// map an element in Fq^2 to Group
-    fn hash_to_curve<B: AsRef<[u8]>>(input: B) -> Self::GroupProjective {
+    fn hash_to_curve<B: AsRef<[u8]>>(input: B) -> Self::GroupAffine {
         let t = Self::eta(input);
         let nums = Self::phi(&t[0], &t[1]);
         let p = Self::h_prime(&[nums[0], nums[1], nums[2], nums[3], t[0], t[1]]);
         // if s1s2 == 0:
         if nums[4] == Self::BaseField::zero() {
-            Self::GroupProjective::zero()
+            Self::GroupAffine::zero()
         } else if nums[3] == Self::BaseField::zero() {
-            Self::GroupProjective::prime_subgroup_generator()
+            Self::GroupAffine::prime_subgroup_generator()
         } else {
             p
         }
@@ -67,5 +67,5 @@ where
     }
 
     // auxiliary map from the threefold T to Eb
-    fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupProjective;
+    fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupAffine;
 }
