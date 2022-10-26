@@ -6,22 +6,19 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ark-ff = { version = "^0.3.0", default-features = false }
-ark-ec = { version = "^0.3.0", default-features = false }
+ark-ff = { git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel" ], rev = "d1e09f06a1947dc85f20170cf459e2a16c746621"  }
 ark-std = { version = "^0.3.0", default-features = false }
-ark-bls12-381 = { version = "^0.3.0", default-features = false, features = [ "curve" ] }
-ark-bls12-377 = { version = "^0.3.0", default-features = false, features = [ "curve" ] }
-ark-serialize = { version = "^0.3.0", default-features = false }
-
+ark-bls12-381 = { git = "https://github.com/arkworks-rs/curves/", features = [ "curve" ], default-features = false, rev = "6d94362894f30c90de7eb2d310223dc2b0712bd7" }
+ark-bls12-377 = { git = "https://github.com/arkworks-rs/curves/", features = [ "curve" ], default-features = false, rev = "6d94362894f30c90de7eb2d310223dc2b0712bd7" }
+ark-serialize = { git = "https://github.com/arkworks-rs/algebra/", rev = "d1e09f06a1947dc85f20170cf459e2a16c746621"  }
+ark-ec= { git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel" ], rev = "d1e09f06a1947dc85f20170cf459e2a16c746621" }
 sha2 = { version = "^0.10.0", default-features = false }
 
 criterion = "0.3.4"
 
 [dev-dependencies]
 itoa = "1.0.2"
-ark-ec-m2c = { package = "ark-ec", git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel" ], rev = "a010399ffef0fbcdefeea8e7793a2f61f769fa3a" }
-ark-ff-m2c = { package = "ark-ff", git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel" ], rev = "a010399ffef0fbcdefeea8e7793a2f61f769fa3a"  }
-ark-test-curves = { git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel", "bls12_381_curve" ], rev = "a010399ffef0fbcdefeea8e7793a2f61f769fa3a"  }
+ark-test-curves = { git = "https://github.com/arkworks-rs/algebra/", features = [ "parallel", "bls12_381_curve" ], rev = "d1e09f06a1947dc85f20170cf459e2a16c746621"  }
 
 [[bench]]
 name = "bench"

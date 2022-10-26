@@ -166,7 +166,7 @@ impl IndifferentiableHash for Parameters {
         let x = x * den;
         let z = z * den;
 
-        Self::GroupAffine::new(x/z, y/z, false)
+        Self::GroupAffine::new(x / z, y / z, false)
     }
 }
 
@@ -239,7 +239,7 @@ mod test {
         let res = <Parameters as IndifferentiableHash>::hash_to_curve(s);
         assert_eq!(x, res.x);
         assert_eq!(y, res.y);
-        
+
         assert!(res.is_on_curve());
     }
 

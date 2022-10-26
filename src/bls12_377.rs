@@ -1,13 +1,14 @@
 use crate::IndifferentiableHash;
 use ark_bls12_377::{g1::Parameters, Fq};
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
+use ark_ff::MontFp;
 use ark_ff::field_new;
 use ark_ff::Field;
 use ark_ff::PrimeField;
 
 impl IndifferentiableHash for Parameters {
     // m = (q - 7) // 9
-    const M: Self::BaseField = field_new!(Fq, "28740491779218788223405859299432614837377056972768295615542695851857829816482313641663209793285928902715591273130");
+    const M: Self::BaseField = mont_fp!(Fq, "28740491779218788223405859299432614837377056972768295615542695851857829816482313641663209793285928902715591273130");
     // w is a primitive 3rd root of unity
     // w = b^((q-1) // 3)
     const W: Self::BaseField = field_new!(Fq, "80949648264912719408558363140637477264845294720710499478137287262712535938301461879813459410945");

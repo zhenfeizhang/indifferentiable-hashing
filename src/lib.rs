@@ -1,5 +1,9 @@
+use std::marker::PhantomData;
 use ark_ec::AffineCurve;
 use ark_ec::SWModelParameters;
+use ark_ec::hashing::map_to_curve_hasher::MapToCurve;
+use ark_ec::hashing::HashToCurveError;
+use ark_ec::CurveGroup;
 use ark_ff::PrimeField;
 use ark_ff::Zero;
 use sha2::Digest;
@@ -10,6 +14,33 @@ mod bls12_381;
 
 #[cfg(test)]
 mod test_vectors;
+
+pub struct BLSIndHash<P>
+where
+    P: IndifferentiableHash,
+    P::BaseField: PrimeField,
+{
+    phantom: PhantomData<P>,
+}
+
+impl<P, T> MapToCurve<T> for BLSIndHash<P>
+where
+    P: IndifferentiableHash,
+    T: CurveGroup<Affine = CurveAffine<P>>,
+    P::BaseField: PrimeField,
+{
+    /// Constructs a new mapping.
+    fn new() -> Result<Self, HashToCurveError> {
+        Ok(Self {
+            phantom: PhantomData::<P>,
+        })
+    }
+
+    /// Map an arbitary field element to a corresponding curve point.
+    fn map_to_curve(&self, point: T::BaseField) -> Result<T::Affine, HashToCurveError> {
+        Ok(P::hash_to_curve(input))
+    }
+}
 
 pub trait IndifferentiableHash: SWModelParameters
 where
