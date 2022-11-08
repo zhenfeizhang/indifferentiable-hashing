@@ -93,7 +93,7 @@ def hPrime(num0,num1,num2,den, t1,t2):
 
 	X = X*den
 	Z = Z*den
-	return X,Y,Z
+	return X,-Y,Z
 
 
 # [1, Lemma 1] states that T is given in the affine space A^5(y0,y1,y2,t1,t2) by the two equations

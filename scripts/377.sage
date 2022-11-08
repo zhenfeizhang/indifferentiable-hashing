@@ -1,4 +1,4 @@
-# credit: Dmitrii Koshelev 
+# credit: Dmitrii Koshelev
 # https://github.com/dishport/Indifferentiable-hashing-to-ordinary-elliptic-curves-of-j-0-with-the-cost-of-one-exponentiation
 
 
@@ -69,7 +69,7 @@ def hPrime(num0,num1,num2,den, t1,t2):
 
 	X = X*den
 	Z = den
-	return X,Y,Z
+	return X,-Y,Z
 
 
 # [1, Lemma 1, Appendix] states that T is given in the affine space A^5(y0,y1,y2,t1,t2) by the two equations
@@ -97,7 +97,7 @@ def phi(t1,t2):
 	a02 = c4*s2s2
 	a01 = 2*c2*s2
 
-        # yi = numi/den
+    # yi = numi/den
 	num0 = a20 - a11 + a10 + a02 + a01 - 3
 	num1 = -3*a20 + a11 + a10 + a02 - a01 + 1
 	num2 = a20 + a11 - a10 - 3*a02 + a01 + 1
@@ -108,12 +108,14 @@ def phi(t1,t2):
 # Map h: (Fq)^2 -> E1(Fq)
 def h(t1,t2):
 	num0,num1,num2,den = phi(t1,t2)
+	print("num: ", num0, num1, num2, den, t1, t2)
 	X,Y,Z = hPrime(num0,num1,num2,den, t1,t2)
 	if s1s2 == 0:
 		X = 0; Y = 1; Z = 1
 	# Without loss of the admissibility property, h can return any other Fq-point on E1 in the case s1s2 == 0 (see [1, Section 4])
 	if den == 0:
 		X = 0; Y = 1; Z = 0
+	print ("x, y", X/Z, Y/Z)
 	return X,Y,Z
 
 
