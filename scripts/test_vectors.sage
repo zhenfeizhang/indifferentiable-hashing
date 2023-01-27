@@ -3,7 +3,7 @@ load("381.sage")
 
 f = open("../src/test_vectors.rs", "w")
 
-f.write("use ark_ff::field_new;")
+f.write("use ark_ff::MontFp;")
 f.write("use ark_bls12_381::Fq as Fq381;")
 f.write("use ark_bls12_377::Fq as Fq377;")
 f.write("use ark_ff::Zero;")
@@ -15,9 +15,9 @@ f.write("let mut a = vec![Fq381::zero();200];")
 for a in range(100):
     X, Y, Z = H(str(a))
 
-    f.write( "a[" + str( a*2 +0) + "] = field_new!(Fq381, \"" + str(X/Z) + "\");" )
+    f.write( "a[" + str( a*2 +0) + "] = MontFp!(\"" + str(X/Z) + "\");" )
     f.write( "\n" )
-    f.write( "a[" + str( a*2 +1) + "] = field_new!(Fq381, \"" + str(Y/Z) + "\");" )
+    f.write( "a[" + str( a*2 +1) + "] = MontFp!(\"" + str(Y/Z) + "\");" )
     f.write( "\n" )
 
 f.write("a")
@@ -34,9 +34,9 @@ f.write("let mut a = vec![Fq377::zero();200];")
 for a in range(100):
     X, Y, Z = H(str(a))
 
-    f.write( "a[" + str( a*2 +0) + "] = field_new!(Fq377, \"" + str(X/Z) + "\");" )
+    f.write( "a[" + str( a*2 +0) + "] = MontFp!(\"" + str(X/Z) + "\");" )
     f.write( "\n" )
-    f.write( "a[" + str( a*2 +1) + "] = field_new!(Fq377, \"" + str(Y/Z) + "\");" )
+    f.write( "a[" + str( a*2 +1) + "] = MontFp!(\"" + str(Y/Z) + "\");" )
     f.write( "\n" )
 
 f.write("a")
