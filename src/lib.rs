@@ -1,5 +1,5 @@
-use ark_ec::AffineCurve;
-use ark_ec::SWModelParameters;
+use ark_ec::short_weierstrass::SWCurveConfig;
+use ark_ec::AffineRepr;
 use ark_ff::PrimeField;
 use ark_ff::Zero;
 use sha2::Digest;
@@ -11,7 +11,7 @@ mod bls12_381;
 #[cfg(test)]
 mod test_vectors;
 
-pub trait IndifferentiableHash: SWModelParameters
+pub trait IndifferentiableHash: SWCurveConfig
 where
     Self::BaseField: PrimeField,
 {
@@ -25,7 +25,7 @@ where
     const C: Self::BaseField;
 
     /// affine curve point
-    type GroupAffine: AffineCurve;
+    type GroupAffine: AffineRepr;
 
     /// map an element in Fq^2 to Group
     fn hash_to_curve<B: AsRef<[u8]>>(input: B) -> Self::GroupAffine {
@@ -36,7 +36,7 @@ where
         if nums[4] == Self::BaseField::zero() {
             Self::GroupAffine::zero()
         } else if nums[3] == Self::BaseField::zero() {
-            Self::GroupAffine::prime_subgroup_generator()
+            Self::GroupAffine::generator()
         } else {
             p
         }

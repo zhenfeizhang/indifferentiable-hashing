@@ -1,18 +1,13 @@
 #[macro_use]
 extern crate criterion;
 
-use ark_bls12_377::g1::Parameters as Param377;
-use ark_bls12_381::g1::Parameters as Param381;
-use ark_ec_m2c::hashing::curve_maps::swu::SWUMap;
-use ark_ec_m2c::hashing::map_to_curve_hasher::MapToCurve;
+use ark_bls12_377::g1::Config as Param377;
+use ark_bls12_381::g1::Config as Param381;
 use ark_ff::fields::Field;
 use ark_ff::fields::PrimeField;
-use ark_ff_m2c::PrimeField as OtherPrimeField;
 use ark_std::rand::RngCore;
 use ark_std::test_rng;
 use ark_std::UniformRand;
-use ark_test_curves::bls12_381::Fq;
-use ark_test_curves::bls12_381::SwuIsoParameters;
 use criterion::Criterion;
 use indifferentiable_hashing::IndifferentiableHash;
 
@@ -29,19 +24,6 @@ fn bench_hash_to_group(c: &mut Criterion) {
 
     let mut bench_group = c.benchmark_group("hash to group");
     bench_group.sample_size(100);
-
-    let inputs_clone = inputs.clone();
-    let bench_str = format!("sw hashing");
-    let swu_hasher = SWUMap::<SwuIsoParameters>::new().unwrap();
-
-    bench_group.bench_function(bench_str, move |b| {
-        b.iter(|| {
-            for i in 0..num_tests {
-                let r = Fq::from_be_bytes_mod_order(inputs_clone[i].as_ref());
-                let _res = swu_hasher.map_to_curve(r);
-            }
-        });
-    });
 
     let inputs_clone = inputs.clone();
     let bench_str = format!("indifferentiable hash for bls12-381");
@@ -72,7 +54,7 @@ fn bench_hash_to_group(c: &mut Criterion) {
     bench_group.bench_function(bench_str, move |b| {
         b.iter(|| {
             for i in 0..num_tests {
-                let _ = t1[i].pow(t2[i].into_repr());
+                let _ = t1[i].pow(t2[i].into_bigint());
             }
         });
     });
