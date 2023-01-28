@@ -34,12 +34,11 @@ where
         Self::hash_to_curve_unchecked(input).clear_cofactor()
     }
 
-    /// map an element in Fq^2 to Group
+    /// Map an element in Fq^2 to Curve without clearing cofactor.
     fn hash_to_curve_unchecked<B: AsRef<[u8]>>(input: B) -> Self::GroupAffine {
         let t = Self::eta(input);
         let nums = Self::phi(&t[0], &t[1]);
         let p = Self::h_prime(&[nums[0], nums[1], nums[2], nums[3], t[0], t[1]]);
-        // if s1s2 == 0:
         if nums[4] == Self::BaseField::zero() {
             Self::GroupAffine::zero()
         } else if nums[3] == Self::BaseField::zero() {
