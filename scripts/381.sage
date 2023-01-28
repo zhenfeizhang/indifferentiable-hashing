@@ -158,7 +158,6 @@ def hPrime(num0,num1,num2,den, t1,t2):
 		Z = den
 
 	X = X*den
-	print("xyz:", X, Y, den)
 	return X,Y,Z
 
 
@@ -176,7 +175,6 @@ def hPrime(num0,num1,num2,den, t1,t2):
 
 # Rational map phi: (Fq)^2 -> T(Fq):
 def phi(t1,t2):
-	print("t1, t2", t1, t2)
 	s1 = t1^3
 	s2 = t2^3
 	s1s1 = s1^2
@@ -208,7 +206,6 @@ def phi(t1,t2):
 	assert(g1 == c*g0*s1)
 	assert(g2 == c2*g0*s2)
 	"""
-	print("result:", num0,num1,num2,den)
 	return num0,num1,num2,den
 
 
@@ -219,7 +216,6 @@ def phi(t1,t2):
 def h(t1,t2):
 	num0,num1,num2,den = phi(t1,t2)
 	X,Y,Z = hPrime(num0,num1,num2,den, t1,t2)
-	print("x, y, z: ", X, Y, Z)
 	if t1*t2 == 0:
 		X = X0; Y = Y0; Z = Z0
 	# Without loss of the admissibility property, h can return any other Fq-point on Eb in the case t1*t2 == 0 (see [1, Section 4])
@@ -267,7 +263,6 @@ def H(s):
 symbols = string.ascii_letters + string.digits
 length = random.randint(0,50)
 s = "input to the test function"
-print(s)
 Eb = EllipticCurve(Fq, [0,b])
 X,Y,Z = H(s)
 print( f"\nH({s})   =   ({X} : {Y} : {Z})   =   {Eb(X,Y,Z)}\n" )

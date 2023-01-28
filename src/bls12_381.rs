@@ -2,6 +2,7 @@ use crate::IndifferentiableHash;
 use ark_bls12_381::g1::Config;
 use ark_bls12_381::Fq;
 use ark_ec::short_weierstrass::Affine;
+use ark_ec::short_weierstrass::SWCurveConfig;
 use ark_ff::Field;
 use ark_ff::MontFp;
 use ark_ff::PrimeField;
@@ -14,7 +15,7 @@ impl IndifferentiableHash for Config {
     const W: Fq = MontFp!("793479390729215512621379701633421447060886740281060493010456487427281649075476305620758731620350");
     // z (i.e., zeta in [1, Section 3]) is a primitive 9th root of unity
     // z = w.nth_root(3)
-    const Z: Fq = MontFp!("501185307051513973337446462668281432142924704371855479526782420057604592581826186485831721800670613054734723765276");
+    const Z: Fq = MontFp!("656279539151453036372723733049135970080835961207516703218496207152846698634665245028822411104358743008817256364884");
     // c1 = (b/z).nth_root(3)
     const C: Fq = MontFp!("656279539151453036372723733049135970080835961207516703218496207152846698634665245028822411104358743008817256364884");
     // sb = b.nth_root(2)
@@ -31,6 +32,8 @@ impl IndifferentiableHash for Config {
     //  and [w](x, y) -> (wx, y) is an automorphism of order 3 on Eb, Eb', and Eb''.
     //
     fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupAffine {
+        let one = Self::BaseField::from(1u64);
+
         let num0 = inputs[0];
         let num1 = inputs[1];
         let num2 = inputs[2];
@@ -38,18 +41,31 @@ impl IndifferentiableHash for Config {
         let t1 = inputs[4];
         let t2 = inputs[5];
 
-        let v = den.square();
-        let u = num0.square() - v;
-        let v2 = v.square();
-        let v4 = v2.square();
-        let v5 = v * v4;
-        let v8 = v4.square();
+        let v = den * den;
+        let u = num0 * num0 - Self::COEFF_B * v;
+        let v2 = v * v;
+        let v4 = v2 * v2;
+        let v8 = v4 * v4;
+        let v9 = v * v8;
+        let v16 = v8 * v8;
+        let v25 = v9 * v16;
 
-        let theta = u * v5 * (u * v8).pow(Self::M.into_bigint());
+        let u2 = u * u;
+        let u3 = u * u2;
+
+        // compute theta = u*v8*(u2*v25)^m
+        let tmp = u2 * v25;
+        let tmp = tmp.pow(Self::M.into_bigint());
+        let theta = u * v8 * tmp;
+
         let v = theta * theta * theta * v;
+        let v3 = v * v * v;
+
+        let w2 = Self::W * Self::W;
+        let z2 = Self::Z * Self::Z;
 
         let mut w_zeta = theta;
-        let w2 = Self::W.square();
+
         if t1 > Self::W * t1 {
             w_zeta *= Self::W;
         }
@@ -57,17 +73,58 @@ impl IndifferentiableHash for Config {
             w_zeta *= Self::W;
         }
 
-        let (x, y) = if v == u {
-            (w_zeta, num0)
-        } else if v == Self::W * u {
-            (theta * t1, num1)
-        } else if v == w2 * u {
-            (theta * t2, num2)
+        let (x, y, z) = if v3 == u3 {
+            let (y, z) = {
+                if v == u {
+                    (one, one)
+                } else if v == Self::W * u {
+                    (Self::Z, Self::Z)
+                } else if v == w2 * u {
+                    (z2, z2)
+                } else {
+                    panic!("should not arrive here")
+                }
+            };
+            let y = y * num0;
+            (w_zeta, y, z)
+        } else if v3 == Self::W * u3 {
+            let x = theta * t1;
+            let zu = Self::Z * u;
+            let (mut y, z) = {
+                if v == zu {
+                    (one, one)
+                } else if v == Self::W * zu {
+                    (Self::Z, Self::Z)
+                } else if v == w2 * zu {
+                    (z2, z2)
+                } else {
+                    panic!("should not arrive here")
+                }
+            };
+            y = y * num1;
+            (x, y, z)
+        } else if v3 == w2 * u3 {
+            let x = theta * t2;
+            let z2u = z2 * u;
+            let (mut y, z) = {
+                if v == z2u {
+                    (one, one)
+                } else if v == Self::W * z2u {
+                    (Self::Z, Self::Z)
+                } else if v == w2 * z2u {
+                    (z2, z2)
+                } else {
+                    panic!("should not arrive here")
+                }
+            };
+            y = y * num2;
+            (x, y, z)
         } else {
             panic!("should not arrive here")
         };
-
-        Self::GroupAffine::new_unchecked(x, y / den)
+        let x = x * den;
+        let z = z * den;
+        Self::GroupAffine::new_unchecked(x / z, y / z)
     }
 }
 
@@ -116,13 +173,13 @@ mod test {
         let t1 = MontFp!( "1637916486738181879757594354935247698146190377973924295856087059563097387500579915402466902218127343335463775185097");
         let t2 = MontFp!( "3084368236562539678793686966099022796947242601500183975334286593823404552243658178662185836974209583527845605498635");
 
-        let num0 = MontFp!( "3907323029266142329677629247141145302116574109761409359386547830066801509673825460759676313956143925321184463756739");
-        let num1 = MontFp!( "578272923952259724112273745438281857984753465059536553279481107815161821090037190528857633468439930778441935489925");
-        let num2 = MontFp!( "823682855771317968884270516493825698933844833638923961461397642987234402518145944551804186068438433764063100887964");
-        let den = MontFp!( "1347770150726807382080703071199277727039296615709072948268344845689432783849833566522518562382504519106049522492473");
+        let num0 =  MontFp!( "668793913132438851216583034173410129819241113864860331755488532912633001474798319621970922570168293026704984270511");
+        let num1 =  MontFp!( "3212829122310676996023797374386516136736852421021963527590835393030480338172734951597532304343302753388335391481734");
+        let num2 =  MontFp!( "1548716369932015580776602644005522146811092687079938004520416189245103671602049774350095885666396762320849868946947");
+        let den =  MontFp!( "2715169702687565714008491526282724206683593110983380931933370057594108505624791522784799556289933904367945122349596");
 
-        let x = MontFp!( "463172938055427656695940778573982304337940308805428225975291306144636365946397580750450928691055305460142008944275");
-        let y = MontFp!( "922157006072556689886388480384040432811137800200465340009477125457864501221362576154817069261793790545967567025429");
+        let x = MontFp!( "1816253950397860200714343084334638831538056055256723554500548354781499946331741127336760011522698677680124556029416");
+        let y = MontFp!( "3244022000566907360019058064254357188251810714491513483291828058507316467039183172973529080475518022136703508585130");
 
         let res = <Config as IndifferentiableHash>::h_prime(&[num0, num1, num2, den, t1, t2]);
         assert_eq!(x, res.x);
@@ -134,8 +191,8 @@ mod test {
         // the following test inputs are obtained from the sage code with an input string s = "input to the test function"
         let s = "input to the test function";
 
-        let x = MontFp!( "463172938055427656695940778573982304337940308805428225975291306144636365946397580750450928691055305460142008944275");
-        let y = MontFp!( "922157006072556689886388480384040432811137800200465340009477125457864501221362576154817069261793790545967567025429");
+        let x = MontFp!( "1816253950397860200714343084334638831538056055256723554500548354781499946331741127336760011522698677680124556029416");
+        let y = MontFp!( "3244022000566907360019058064254357188251810714491513483291828058507316467039183172973529080475518022136703508585130");
 
         let res = <Config as IndifferentiableHash>::hash_to_curve_unchecked(s);
         assert_eq!(x, res.x);

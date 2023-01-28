@@ -65,7 +65,6 @@ impl IndifferentiableHash for Config {
         } else {
             panic!("should not arrive here")
         };
-        println!("x y z {} {} {} ", x, y, den);
         Self::GroupAffine::new_unchecked(x, y / den)
     }
 }
