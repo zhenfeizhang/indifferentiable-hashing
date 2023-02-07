@@ -23,11 +23,11 @@ __Note__: you may need [SageMath](https://www.sagemath.org/) to validate test ve
 Collected over `1000` iterations, each with a random input.
 ```
 indifferentiable hash/hash to group bls12-381                                                                            
-                        time:   [72.090 ms 72.114 ms 72.143 ms]
+                        time:   [66.673 ms 66.826 ms 67.030 ms]
 indifferentiable hash/hash to group bls12-377                                                                            
                         time:   [63.077 ms 63.097 ms 63.121 ms]
 indifferentiable hash/hash to curve bls12-381                                                                            
-                        time:   [39.572 ms 39.583 ms 39.596 ms]
+                        time:   [32.808 ms 32.996 ms 33.199 ms]
 indifferentiable hash/hash to curve bls12-377                                                                            
                         time:   [31.920 ms 31.930 ms 31.942 ms]
 indifferentiable hash/field exp                                                                            

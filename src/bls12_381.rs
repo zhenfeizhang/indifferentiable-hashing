@@ -124,7 +124,8 @@ impl IndifferentiableHash for Config {
         };
         let x = x * den;
         let z = z * den;
-        Self::GroupAffine::new_unchecked(x / z, y / z)
+        let z_inv = z.inverse().unwrap();
+        Self::GroupAffine::new_unchecked(x * z_inv, y * z_inv)
     }
 }
 
