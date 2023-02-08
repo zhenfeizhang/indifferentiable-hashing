@@ -1,6 +1,6 @@
 use crate::IndifferentiableHash;
 use ark_bls12_377::g1::Config;
-use ark_ec::short_weierstrass::Affine;
+use ark_ec::short_weierstrass::Projective;
 use ark_ff::Field;
 use ark_ff::MontFp;
 use ark_ff::PrimeField;
@@ -19,8 +19,8 @@ impl IndifferentiableHash for Config {
     // sb = b.nth_root(2)
     const SB: Self::BaseField = MontFp!("258664426012969094010652733694893533536393512754914660539884262666720468348340822774968888139573360124440321458176");
 
-    /// affine curve point
-    type GroupAffine = Affine<Self>;
+    /// projective curve point
+    type GroupProjective = Projective<Self>;
 
     ///  Auxiliary map h': T(Fq) -> Eb(Fq):
     //
@@ -29,7 +29,7 @@ impl IndifferentiableHash for Config {
     //  where Eb', Eb'' are the cubic twists of Eb
     //  and [w](x, y) -> (wx, y) is an automorphism of order 3 on Eb, Eb', and Eb''.
     //
-    fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupAffine {
+    fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupProjective {
         let num0 = inputs[0];
         let num1 = inputs[1];
         let num2 = inputs[2];
@@ -65,7 +65,11 @@ impl IndifferentiableHash for Config {
         } else {
             panic!("should not arrive here")
         };
-        Self::GroupAffine::new_unchecked(x, y / den)
+
+        let z = den;
+        let x = x * den;
+
+        Self::GroupProjective::new_unchecked(x * z, y * z * z, z)
     }
 }
 
@@ -73,6 +77,7 @@ impl IndifferentiableHash for Config {
 mod test {
     use crate::{test_vectors::bls12_377_test, IndifferentiableHash};
     use ark_bls12_377::g1::Config;
+    use ark_ec::CurveGroup;
     use ark_ff::MontFp;
     use itoa::Buffer;
 
@@ -121,7 +126,8 @@ mod test {
         let x = MontFp!( "88447843811798607965089937473865912423924078263559752807725536262741898732229175112055733585000923536178427677939");
         let y = MontFp!( "139324808532316606671650275155567853806912817623105000585824704086139150798338823307830046341449999254302587526332");
 
-        let res = <Config as IndifferentiableHash>::h_prime(&[num0, num1, num2, den, t1, t2]);
+        let res = <Config as IndifferentiableHash>::h_prime(&[num0, num1, num2, den, t1, t2])
+            .into_affine();
         assert_eq!(x, res.x);
         assert_eq!(y, res.y);
     }
@@ -134,7 +140,7 @@ mod test {
         let x = MontFp!( "88447843811798607965089937473865912423924078263559752807725536262741898732229175112055733585000923536178427677939");
         let y = MontFp!( "139324808532316606671650275155567853806912817623105000585824704086139150798338823307830046341449999254302587526332");
 
-        let res = <Config as IndifferentiableHash>::hash_to_curve_unchecked(s);
+        let res = <Config as IndifferentiableHash>::hash_to_curve_unchecked(s).into_affine();
         assert_eq!(x, res.x);
         assert_eq!(y, res.y);
 
@@ -148,7 +154,8 @@ mod test {
         for i in 0..test_vectors.len() / 2 {
             let mut buffer = Buffer::new();
             let printed = buffer.format(i);
-            let res = <Config as IndifferentiableHash>::hash_to_curve_unchecked(printed);
+            let res =
+                <Config as IndifferentiableHash>::hash_to_curve_unchecked(printed).into_affine();
             assert_eq!(test_vectors[i * 2], res.x);
             assert_eq!(test_vectors[i * 2 + 1], res.y);
 

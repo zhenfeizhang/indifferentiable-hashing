@@ -1,5 +1,7 @@
 use ark_ec::short_weierstrass::SWCurveConfig;
 use ark_ec::AffineRepr;
+use ark_ec::CurveGroup;
+use ark_ec::Group;
 use ark_ff::PrimeField;
 use ark_ff::Zero;
 use sha2::Digest;
@@ -26,23 +28,25 @@ where
     // sb = b.nth_root(2)
     const SB: Self::BaseField;
 
-    /// affine curve point
-    type GroupAffine: AffineRepr;
+    /// projective curve point
+    type GroupProjective: CurveGroup;
 
     /// map an element in Fq^2 to Group
-    fn hash_to_curve<B: AsRef<[u8]>>(input: B) -> Self::GroupAffine {
-        Self::hash_to_curve_unchecked(input).clear_cofactor()
+    fn hash_to_curve<B: AsRef<[u8]>>(input: B) -> <Self::GroupProjective as CurveGroup>::Affine {
+        Self::hash_to_curve_unchecked(input)
+            .into_affine()
+            .clear_cofactor()
     }
 
     /// Map an element in Fq^2 to Curve without clearing cofactor.
-    fn hash_to_curve_unchecked<B: AsRef<[u8]>>(input: B) -> Self::GroupAffine {
+    fn hash_to_curve_unchecked<B: AsRef<[u8]>>(input: B) -> Self::GroupProjective {
         let t = Self::eta(input);
         let nums = Self::phi(&t[0], &t[1]);
         let p = Self::h_prime(&[nums[0], nums[1], nums[2], nums[3], t[0], t[1]]);
         if nums[4] == Self::BaseField::zero() {
-            Self::GroupAffine::zero()
+            Self::GroupProjective::zero()
         } else if nums[3] == Self::BaseField::zero() {
-            Self::GroupAffine::generator()
+            Self::GroupProjective::generator()
         } else {
             p
         }
@@ -121,5 +125,5 @@ where
     }
 
     // auxiliary map from the threefold T to Eb
-    fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupAffine;
+    fn h_prime(inputs: &[Self::BaseField; 6]) -> Self::GroupProjective;
 }
