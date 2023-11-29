@@ -32,8 +32,8 @@ indifferentiable hash/hash to curve bls12-377
                         time:   [31.920 ms 31.930 ms 31.942 ms]
 indifferentiable hash/field exp                                                                            
                         time:   [18.762 ms 18.766 ms 18.770 ms]
-SWU hash/hash to group bls12-377                                                                            
+Wahby-Boneh hash/hash to group bls12-377                                                                            
                         time:   [203.02 ms 203.24 ms 203.60 ms]
-SWU hash/hash to group bls12-381                                                                            
+Wahby-Boneh hash/hash to group bls12-381                                                                            
                         time:   [176.64 ms 176.98 ms 177.39 ms]
 ```
