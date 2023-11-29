@@ -94,7 +94,7 @@ fn bench_wb_hash(c: &mut Criterion) {
         .map(|_| (0..32).map(|_| rng.next_u32() as u8).collect::<Vec<u8>>())
         .collect();
 
-    let mut bench_group = c.benchmark_group("SWU hash");
+    let mut bench_group = c.benchmark_group("Wahby-Boneh hash");
     bench_group.sample_size(100);
 
     let hasher = MapToCurveBasedHasher::<
